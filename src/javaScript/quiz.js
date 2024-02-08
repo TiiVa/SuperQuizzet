@@ -4,135 +4,32 @@ class Question {
     this.correctAnswer = correctAnswer;
   }
 }
+const questions = [];
 
-const json = `
-{
-    "response_code": 0,
-    "results": [
-        {
-            "type": "boolean",
-            "difficulty": "easy",
-            "category": "Science: Computers",
-            "question": "Pointers were not used in the original C programming language; they were added later on in C++.",
-            "correct_answer": "False",
-            "incorrect_answers": [
-                "True"
-            ]
-        },
-        {
-            "type": "boolean",
-            "difficulty": "easy",
-            "category": "Science: Computers",
-            "question": "The programming language &quot;Python&quot; is based off a modified version of &quot;JavaScript&quot;.",
-            "correct_answer": "False",
-            "incorrect_answers": [
-                "True"
-            ]
-        },
-        {
-            "type": "boolean",
-            "difficulty": "easy",
-            "category": "Science: Computers",
-            "question": "The Python programming language gets its name from the British comedy group &quot;Monty Python.&quot;",
-            "correct_answer": "True",
-            "incorrect_answers": [
-                "False"
-            ]
-        },
-        {
-            "type": "boolean",
-            "difficulty": "easy",
-            "category": "Science: Computers",
-            "question": "The logo for Snapchat is a Bell.",
-            "correct_answer": "False",
-            "incorrect_answers": [
-                "True"
-            ]
-        },
-        {
-            "type": "boolean",
-            "difficulty": "easy",
-            "category": "Science: Computers",
-            "question": "The Windows 7 operating system has six main editions.",
-            "correct_answer": "True",
-            "incorrect_answers": [
-                "False"
-            ]
-        },
-        {
-            "type": "boolean",
-            "difficulty": "easy",
-            "category": "Science: Computers",
-            "question": "RAM stands for Random Access Memory.",
-            "correct_answer": "True",
-            "incorrect_answers": [
-                "False"
-            ]
-        },
-        {
-            "type": "boolean",
-            "difficulty": "easy",
-            "category": "Science: Computers",
-            "question": "Linux was first created as an alternative to Windows XP.",
-            "correct_answer": "False",
-            "incorrect_answers": [
-                "True"
-            ]
-        },
-        {
-            "type": "boolean",
-            "difficulty": "easy",
-            "category": "Science: Computers",
-            "question": "The Windows ME operating system was released in the year 2000.",
-            "correct_answer": "True",
-            "incorrect_answers": [
-                "False"
-            ]
-        },
-        {
-            "type": "boolean",
-            "difficulty": "easy",
-            "category": "Science: Computers",
-            "question": "Linus Torvalds created Linux and Git.",
-            "correct_answer": "True",
-            "incorrect_answers": [
-                "False"
-            ]
-        },
-        {
-            "type": "boolean",
-            "difficulty": "easy",
-            "category": "Science: Computers",
-            "question": "Time on Computers is measured via the EPOX System.",
-            "correct_answer": "False",
-            "incorrect_answers": [
-                "True"
-            ]
-        }
-    ]
-}
-`;
+async function getQuestions() {
+  const triviaUrl =
+    "https://opentdb.com/api.php?amount=10&category=18&difficulty=easy&type=boolean";
 
-const response = JSON.parse(json);
+  const response = await fetch(triviaUrl);
 
-const q2 = response["results"];
+  const results = await response.json();
 
-const questions = [
-  new Question("Hej", true),
-  new Question("Då", false),
-  new Question("Är CSS kul?", false),
-];
+  if (results["response_code"] != 0) {
+    return;
+  }
+  console.log(results);
 
-for (const fråga of q2) {
-  let correctAnswer = fråga["correct_answer"] === "True";
+  for (const fråga of results["results"]) {
+    let correctAnswer = fråga["correct_answer"] === "True";
 
-  const q = new Question(fråga["question"], correctAnswer);
-  questions.push(q);
+    const q = new Question(fråga["question"], correctAnswer);
+    questions.push(q);
+  }
+
+  displayQuestions();
 }
 
-console.log(q2);
-
-console.log(questions);
+getQuestions();
 
 const questionsList = document.querySelector("#questions");
 const score = document.querySelector("#score");
@@ -140,8 +37,6 @@ const score = document.querySelector("#score");
 let scoreCount = 0;
 
 console.log(questionsList);
-
-displayQuestions();
 
 function displayQuestions() {
   for (const question of questions) {
@@ -220,7 +115,7 @@ function applyStyles(
   trueBtn,
   falseBtn
 ) {
-  li.classList.add("list-group-item", "bg-dark", "border-danger");
+  li.classList.add("list-group-item", "bg-dark", "border-info");
   card.classList.add("card", "bg-dark", "container");
   cardBody.classList.add("card-body", "row");
   cardFooter.classList.add(
